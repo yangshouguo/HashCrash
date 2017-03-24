@@ -1,6 +1,4 @@
-
-
-# a IDAPython script : give many  instruction close to each other like move add , it find their binary representation
+# a IDAPython script : give two  instruction close to each other like move add , it find their binary representation
 
 from idaapi import *
 from idc import *
@@ -9,7 +7,7 @@ import sys
 class Inst_search:
 
     def __init__(self , *argv):
-        self.arg = argv
+        self.arg = argv[0]
         self.instr_num = len(argv)
         self.filename = 'error'
         self.openfile()
@@ -93,7 +91,5 @@ if( len(idc.ARGV) < 3):
     instrsear = Inst_search('move','move','move')
     instrsear.search()
 else:
-    instrsear = Inst_search(idc.ARGV)
+    instrsear = Inst_search(idc.ARGV[1:])
     instrsear.search()
-
-
