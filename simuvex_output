@@ -1,0 +1,57 @@
+/usr/bin/python2.7 /home/ysg/software/pycharm-community-2016.3.2/helpers/pydev/pydevd.py --multiproc --qt-support --client 127.0.0.1 --port 34746 --file /home/ysg/PycharmProjects/pyvex_test/ttttt_del.py
+pydev debugger: process 2578 is connecting
+
+Connected to pydev debugger (build 163.10154.50)
+0x40052dL
+[]
+0x400576L
+[]
+0x400581L
+[<Bool reg_48_4_64 == 0xffffff0000000000>, <Bool mem_ffffff0000000000_5_8 == 0>]
+0x40054cL
+[<Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+WARNING | 2017-03-28 19:42:49,668 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_6_64>
+0x400581L
+[<Bool mem_ffffff0000000001_7_8 == 0>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+WARNING | 2017-03-28 19:42:56,829 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_8_64>
+0x400581L
+[<Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool mem_ffffff0000000002_9_8 == 0>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+WARNING | 2017-03-28 19:43:01,735 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_10_64>
+0x400581L
+[<Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool mem_ffffff0000000003_11_8 == 0>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>]
+WARNING | 2017-03-28 19:43:06,206 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_12_64>
+0x400581L
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool mem_ffffff0000000004_13_8 == 0>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>]
+WARNING | 2017-03-28 19:43:09,664 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_14_64>
+0x400581L
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool mem_ffffff0000000005_15_8 == 0>, <Bool !(mem_ffffff0000000004_13_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>]
+WARNING | 2017-03-28 19:43:20,459 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_16_64>
+0x400581L
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool mem_ffffff0000000006_17_8 == 0>]
+0x40054cL
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
+WARNING | 2017-03-28 19:43:27,949 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_18_64>
+0x400581L
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool mem_ffffff0000000007_19_8 == 0>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000007_19_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
+WARNING | 2017-03-28 19:43:32,887 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_20_64>
+0x400581L
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool mem_ffffff0000000008_21_8 == 0>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000007_19_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool !(mem_ffffff0000000008_21_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000007_19_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
+WARNING | 2017-03-28 19:43:38,578 | simuvex.engine.successors | Exit state has over 257 possible solutions. Likely unconstrained; skipping. <BV64 mem_7ffffffffff0000_22_64>
+0x400581L
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool !(mem_ffffff0000000008_21_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000007_19_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool mem_ffffff0000000009_23_8 == 0>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
+0x40054cL
+[<Bool !(mem_ffffff0000000002_9_8 == 0)>, <Bool !(mem_ffffff0000000008_21_8 == 0)>, <Bool reg_48_4_64 == 0xffffff0000000000>, <Bool !(mem_ffffff0000000000_5_8 == 0)>, <Bool !(mem_ffffff0000000007_19_8 == 0)>, <Bool !(mem_ffffff0000000005_15_8 == 0)>, <Bool !(mem_ffffff0000000004_13_8 == 0)>, <Bool !(mem_ffffff0000000009_23_8 == 0)>, <Bool !(mem_ffffff0000000003_11_8 == 0)>, <Bool !(mem_ffffff0000000001_7_8 == 0)>, <Bool !(mem_ffffff0000000006_17_8 == 0)>]
