@@ -1,0 +1,225 @@
+
+import pyvex
+import archinfo
+import cle
+from z3 import *
+ld = cle.Loader("HelloWorld")
+
+Not_handle_tag = ["Ist_IMark","Ist_AbiHint"]
+var_allocate = {}
+def getIRSBfromBin(addr, data_len = 0x100):
+    print hex(addr)
+    some_text_data =  "".join(ld.memory.read_bytes(addr, data_len))
+    irsb = pyvex.IRSB(some_text_data, addr, ld.main_bin.arch)
+    return irsb
+
+def extrUit(ss):
+    ss = str(ss)
+    p1 = ss.find("(")
+    p2 = ss.find(")")
+    if(p1<0 or p2<0):
+        return ss
+    return ss[p1+1:p2]
+def IRtoZ3exprVira(var): # if var is number , return a number , else return a z3expr
+    x = str(var)
+    if ("0x" in x):
+        return int(x, 16)
+    elif (x.isdigit()):
+        return int(x)
+    else:
+        if (x not in var_allocate):
+            strcmd = "%s = Int('%s')" % (x, x)
+            exec strcmd
+            var_allocate["%s" % x] = eval(x)
+            return eval(x)
+        else:
+            return var_allocate["%s" % x]
+
+# translate a IR word from pyvex to z3 expression
+def handlesinwor(pyvex_word):
+    if(pyvex_word.tag  not in Not_handle_tag):
+        word_str = str(pyvex_word)
+        # change offset=12 => offset12
+        p_offset = word_str.find("offset")
+        if(p_offset>0):
+            word_str = word_str[0:p_offset+6]+word_str[p_offset+7:]
+        # print word_str
+
+        # to handle if
+        pre = ""
+        if( 'if' in word_str):
+            r = word_str.find(')')
+            pre = word_str[0:r+1]
+            pre += ':'
+            ll = r+2
+            rr = word_str.find(';')
+            word_str = word_str[ll+1:rr]
+        # find symbols: = ( ) position
+        p1 = word_str.find("=")
+        left = word_str[0:p1-1]
+        right_b = word_str[p1+2:]
+        left = extrUit(left)
+        right_b = extrUit(right_b)
+        # print left+right_b
+        if("GET" in word_str):  # t0 = GET:I64(offset=56) => t0 = offset56
+            return  pre+(left) +'='+ (right_b)
+        elif("Sub" in word_str):# t6 = Sub64(t7,0x0000000000000008) => t6 = t7-0x0000000000000008
+            pp = right_b.find(",")
+            subl = right_b[0:pp]
+            subr = right_b[pp+1:]
+            return  pre+(left) +'='+  (subl) +'-'+  (subr)
+        elif("Add" in word_str):# t9 = Add64(t6,0xffffffffffffffe8) => t9 = t6+0xffffffffffffffe8
+            pp = right_b.find(",")
+            subl = right_b[0:pp]
+            subr = right_b[pp+1:]
+            return  pre+(left) +'='+  (subl) +'+'+  (subr)
+        elif("LDle" in word_str):
+            if("I8" in word_str):
+                return pre + (left) + '=' + (right_b + "_8_memory")
+            return  pre+(left)   +'='+  (right_b+"_64_memory")
+        elif("PUT" in word_str):#PUT(offset=48) = t6 => offset48 = t6
+            return   pre+(left) +'='+  (right_b)
+        elif("STle" in word_str):#STle(t6) = t0 => [t6]=t0!!!!!!!!!!!!!
+            return  pre+(left+"_memory") +'='+  (right_b)
+        elif ("Mul" in word_str):
+            pp = right_b.find(",")
+            subl = right_b[0:pp]
+            subr = right_b[pp + 1:]
+            return  pre+(left) +'='+   (subl)  +'*'+   (subr)
+        elif("And" in word_str):
+            pp = right_b.find(",")
+            subl = right_b[0:pp]
+            subr = right_b[pp + 1:]
+            return  pre+(left)  +'='+   (subl)  +'&'+   (subr)
+        elif("CmpEQ" in word_str):
+            pp = right_b.find(",")
+            subl = right_b[0:pp]
+            subr = right_b[pp + 1:]
+            return  pre+(left) +'=' +'('+subl +'=='+ subr+')'
+        elif("Shr" in word_str):
+            pp = right_b.find(",")
+            subl = right_b[0:pp]
+            subr = right_b[pp + 1:]
+            return  pre+(left) +'='+   (subl)+'*16**'+ (subr)
+        else:
+            return  pre+(left) +'='+  (right_b)
+    else:
+        return True
+
+
+
+
+def getZ3expr(expression): #handle like b == hash - 8 + 5
+    expr = str(expression)
+    expr = expr.replace(' ','')
+    print expr
+    items = expr.split('==')
+    left = items[0]
+    right = items[1]
+    vars = 0
+    tmp =  ('tmp')
+
+    if('-' in right):
+        vars = right.split('-')
+        return  (left) ==  (vars[0]) -  (vars[1])
+    elif ('+' in right):
+        vars = right.split('+')
+        return  (left) ==  (vars[0]) +  (vars[1])
+    elif ('*' in right):
+        vars = right.split('*')
+        return  (left) ==  (vars[0]) *  (vars[1])
+    elif ('**' in right):
+        vars = right.split('**')
+        return  (left) ==  (vars[0]) **  (vars[1])
+    elif ('&' in right):
+        vars = right.split('&')
+        return  (left) ==  (vars[0]) &  (vars[1])
+def getpart(instruction , lr): # get the element from equal formula
+    #param instruction :string
+    # lr 0:left part
+    #    1:right part
+    #    2:right elemnets
+    ei = instruction.find('=')
+    if (lr == 0):
+        return instruction[0:ei]
+    elif lr == 1:
+        return instruction[ei+1:]
+    else:
+        mapr = []
+        rightpart = instruction
+        oplist = ['+', '-', '*', '&', '=']
+        l = ei+1
+        r = 0
+        for index in range(len(rightpart)):
+            if(index <= ei):
+                continue
+            if (rightpart[index] in oplist):
+                r = index
+                mapr.append( rightpart[l:r])
+                l = index + 1
+                if (rightpart[l] in oplist):
+                    l += 1
+        mapr.append(rightpart[l:len(rightpart)])
+        return mapr
+def pre_Handle(exp_ob_bool): # get rid of bool type
+    ll = len(exp_ob_bool)
+    i = 0 ;
+    while i < ll:
+        if(type(exp_ob_bool[i]) is bool):
+            del  exp_ob_bool[i]
+            ll -= 1
+        else:
+            i+=1
+    return exp_ob_bool
+def simplifyExpr(expr_list):
+    expr_list = pre_Handle(expr_list)
+    list_len = len(expr_list)
+    nowindex = list_len-1
+    while nowindex > 0:
+        rightoprand = getpart(expr_list[nowindex] ,3)
+        searchindex = nowindex - 1
+        while searchindex >= 0:
+            leftpart = getpart(expr_list[searchindex],0)
+            for item in rightoprand:
+                if(not cmp(leftpart , item)):
+                    right = getpart(expr_list[searchindex] , 1)
+                    expr_list[nowindex] = expr_list[nowindex].replace(item , right)
+            rightoprand = getpart(expr_list[nowindex],3)
+            searchindex -= 1
+        nowindex -= 1
+
+
+addr = 0x40052D
+addr_go =[]
+addr_not_go = []
+addr_not_go.append(addr)
+z3_expr = []
+# find all blocks in hash function
+while (len(addr_not_go)):
+
+    if addr_not_go[0] not in addr_go:
+        irsb = getIRSBfromBin(addr_not_go[0])
+        # print irsb.pp()
+        stm_used = irsb.stmts_used
+        for i in range(stm_used):
+            simwor = handlesinwor(irsb.statements[i])
+            z3_expr.append(simwor)
+            print irsb.statements[i]
+            # print handlesinwor(irsb.statements[i])
+        addr_go.append(addr_not_go[0])
+        del addr_not_go[0]
+        nextmove = irsb.constant_jump_targets
+
+        for addr in  (nextmove):
+            if addr not in addr_go:
+                addr_not_go.append(addr)
+        # print [hex(int(x)) for x in addr_not_go]
+    else:
+        del addr_not_go[0]
+# for item in z3_expr:
+#     print item
+# print '--------------------'
+# simplifyExpr(z3_expr)
+# for item in z3_expr:
+#     print item
+s = Solver()
