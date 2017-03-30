@@ -1,0 +1,229 @@
+------ IMark(0x40052d, 1, 0) ------
+t0 = GET:I64(offset=56)
+t7 = GET:I64(offset=48)
+t6 = Sub64(t7,0x0000000000000008)
+PUT(offset=48) = t6
+STle(t6) = t0
+------ IMark(0x40052e, 3, 0) ------
+PUT(offset=56) = t6
+PUT(offset=184) = 0x0000000000400531
+------ IMark(0x400531, 4, 0) ------
+t9 = Add64(t6,0xffffffffffffffe8)
+t11 = GET:I64(offset=72)
+STle(t9) = t11
+PUT(offset=184) = 0x0000000000400535
+------ IMark(0x400535, 7, 0) ------
+t12 = Add64(t6,0xfffffffffffffffc)
+STle(t12) = 0x0005c6b7
+PUT(offset=184) = 0x000000000040053c
+------ IMark(0x40053c, 7, 0) ------
+t14 = Add64(t6,0xfffffffffffffff4)
+STle(t14) = 0x0000f8c9
+PUT(offset=184) = 0x0000000000400543
+------ IMark(0x400543, 7, 0) ------
+t16 = Add64(t6,0xfffffffffffffff8)
+STle(t16) = 0x00000000
+------ IMark(0x40054a, 2, 0) ------
+0x400576L
+------ IMark(0x400576, 4, 0) ------
+t6 = GET:I64(offset=56)
+t5 = Add64(t6,0xffffffffffffffe8)
+t7 = LDle:I64(t5)
+PUT(offset=184) = 0x000000000040057a
+------ IMark(0x40057a, 3, 0) ------
+t10 = LDle:I8(t7)
+t19 = 8Uto32(t10)
+t9 = t19
+t20 = 32Uto64(t9)
+t8 = t20
+PUT(offset=16) = t8
+------ IMark(0x40057d, 2, 0) ------
+t4 = GET:I8(offset=16)
+PUT(offset=144) = 0x0000000000000011
+t21 = 8Uto64(t4)
+t11 = t21
+PUT(offset=152) = t11
+PUT(offset=160) = 0x0000000000000000
+PUT(offset=184) = 0x000000000040057f
+------ IMark(0x40057f, 2, 0) ------
+t24 = And64(t11,0x00000000000000ff)
+t23 = CmpEQ64(t24,0x0000000000000000)
+t22 = 1Uto64(t23)
+t17 = t22
+t25 = 64to1(t17)
+t12 = t25
+if (t12) { PUT(offset=184) = 0x400581; Ijk_Boring }
+0x400581L
+------ IMark(0x400581, 4, 0) ------
+t30 = GET:I64(offset=56)
+t29 = Add64(t30,0xfffffffffffffff4)
+t2 = LDle:I32(t29)
+t0 = Add32(t2,0x0000000c)
+STle(t29) = t0
+PUT(offset=184) = 0x0000000000400585
+------ IMark(0x400585, 3, 0) ------
+t33 = Add64(t30,0xfffffffffffffff8)
+t36 = LDle:I32(t33)
+t35 = 32Uto64(t36)
+------ IMark(0x400588, 5, 0) ------
+------ IMark(0x40058d, 2, 0) ------
+t39 = 64to32(t35)
+t38 = 32Uto64(t39)
+------ IMark(0x40058f, 2, 0) ------
+t43 = 64to32(t38)
+t8 = MullU32(t43,0x218e09a5)
+t47 = 64HIto32(t8)
+t49 = 32Uto64(t47)
+PUT(offset=32) = t49
+------ IMark(0x400591, 2, 0) ------
+t52 = 64to32(t49)
+t51 = 32Uto64(t52)
+------ IMark(0x400593, 3, 0) ------
+t54 = 64to32(t51)
+t56 = 32Uto64(t54)
+t14 = Shr64(t56,0x0f)
+t66 = 64to32(t14)
+t67 = 32Uto64(t66)
+------ IMark(0x400596, 6, 0) ------
+t68 = 64to32(t67)
+t20 = Mul32(t68,0x0003d08d)
+t72 = 32Uto64(t20)
+------ IMark(0x40059c, 2, 0) ------
+t73 = 64to32(t35)
+t75 = 64to32(t72)
+t21 = Sub32(t73,t75)
+PUT(offset=144) = 0x0000000000000007
+t77 = 32Uto64(t73)
+PUT(offset=152) = t77
+t78 = 32Uto64(t75)
+PUT(offset=160) = t78
+t79 = 32Uto64(t21)
+PUT(offset=24) = t79
+------ IMark(0x40059e, 2, 0) ------
+t81 = 64to32(t79)
+t80 = 32Uto64(t81)
+PUT(offset=16) = t80
+PUT(offset=184) = 0x00000000004005a0
+------ IMark(0x4005a0, 1, 0) ------
+t25 = GET:I64(offset=48)
+t24 = LDle:I64(t25)
+t83 = Add64(t25,0x0000000000000008)
+PUT(offset=48) = t83
+PUT(offset=56) = t24
+PUT(offset=184) = 0x00000000004005a1
+------ IMark(0x4005a1, 1, 0) ------
+t27 = LDle:I64(t83)
+t28 = Add64(t83,0x0000000000000008)
+PUT(offset=48) = t28
+t84 = Sub64(t28,0x0000000000000080)
+====== AbiHint(0xt84, 128, t27) ======
+0x40054cL
+------ IMark(0x40054c, 3, 0) ------
+t25 = GET:I64(offset=56)
+t24 = Add64(t25,0xfffffffffffffff8)
+t27 = LDle:I32(t24)
+t92 = 32Uto64(t27)
+t26 = t92
+PUT(offset=184) = 0x000000000040054f
+------ IMark(0x40054f, 4, 0) ------
+t93 = 64to32(t26)
+t28 = t93
+t30 = Add64(t25,0xfffffffffffffff4)
+t1 = LDle:I32(t30)
+t3 = Mul32(t1,t28)
+t94 = 32Uto64(t3)
+t34 = t94
+------ IMark(0x400553, 2, 0) ------
+t95 = 64to32(t34)
+t36 = t95
+t96 = 32Uto64(t36)
+t35 = t96
+PUT(offset=24) = t35
+PUT(offset=184) = 0x0000000000400555
+------ IMark(0x400555, 4, 0) ------
+t38 = Add64(t25,0xffffffffffffffe8)
+t40 = LDle:I64(t38)
+------ IMark(0x400559, 4, 0) ------
+t41 = Add64(t40,0x0000000000000001)
+PUT(offset=32) = t41
+PUT(offset=184) = 0x000000000040055d
+------ IMark(0x40055d, 4, 0) ------
+t43 = Add64(t25,0xffffffffffffffe8)
+STle(t43) = t41
+PUT(offset=184) = 0x0000000000400561
+------ IMark(0x400561, 3, 0) ------
+t48 = LDle:I8(t40)
+t97 = 8Uto32(t48)
+t47 = t97
+t98 = 32Uto64(t47)
+t46 = t98
+PUT(offset=16) = t46
+------ IMark(0x400564, 3, 0) ------
+t51 = GET:I8(offset=16)
+t99 = 8Sto32(t51)
+t50 = t99
+t100 = 32Uto64(t50)
+t49 = t100
+------ IMark(0x400567, 2, 0) ------
+t101 = 64to32(t49)
+t52 = t101
+t102 = 64to32(t35)
+t54 = t102
+t9 = Add32(t52,t54)
+t103 = 32Uto64(t9)
+t58 = t103
+PUT(offset=184) = 0x0000000000400569
+------ IMark(0x400569, 3, 0) ------
+t59 = Add64(t25,0xfffffffffffffff8)
+t104 = 64to32(t58)
+t61 = t104
+STle(t59) = t61
+PUT(offset=184) = 0x000000000040056c
+------ IMark(0x40056c, 3, 0) ------
+t63 = Add64(t25,0xfffffffffffffff4)
+t66 = LDle:I32(t63)
+t105 = 32Uto64(t66)
+t65 = t105
+PUT(offset=184) = 0x000000000040056f
+------ IMark(0x40056f, 4, 0) ------
+t106 = 64to32(t65)
+t67 = t106
+t69 = Add64(t25,0xfffffffffffffffc)
+t14 = LDle:I32(t69)
+t16 = Mul32(t14,t67)
+t107 = 32Uto64(t16)
+t73 = t107
+PUT(offset=184) = 0x0000000000400573
+------ IMark(0x400573, 3, 0) ------
+t74 = Add64(t25,0xfffffffffffffff4)
+t108 = 64to32(t73)
+t76 = t108
+STle(t74) = t76
+PUT(offset=184) = 0x0000000000400576
+------ IMark(0x400576, 4, 0) ------
+t78 = Add64(t25,0xffffffffffffffe8)
+t80 = LDle:I64(t78)
+PUT(offset=184) = 0x000000000040057a
+------ IMark(0x40057a, 3, 0) ------
+t83 = LDle:I8(t80)
+t109 = 8Uto32(t83)
+t82 = t109
+t110 = 32Uto64(t82)
+t81 = t110
+PUT(offset=16) = t81
+------ IMark(0x40057d, 2, 0) ------
+t23 = GET:I8(offset=16)
+PUT(offset=144) = 0x0000000000000011
+t111 = 8Uto64(t23)
+t84 = t111
+PUT(offset=152) = t84
+PUT(offset=160) = 0x0000000000000000
+PUT(offset=184) = 0x000000000040057f
+------ IMark(0x40057f, 2, 0) ------
+t114 = And64(t84,0x00000000000000ff)
+t113 = CmpEQ64(t114,0x0000000000000000)
+t112 = 1Uto64(t113)
+t90 = t112
+t115 = 64to1(t90)
+t85 = t115
+if (t85) { PUT(offset=184) = 0x400581; Ijk_Boring }
