@@ -73,14 +73,14 @@ def handlesinwor(pyvex_word):
             subl = right_b[0:pp]
             subr = right_b[pp+1:]
             return  pre+(left) +'='+  (subl) +'+'+  (subr)
-        elif("LDle" in word_str):
-            if("I8" in word_str):
-                return pre + (left) + '=' + (right_b + "_8_memory")
-            return  pre+(left)   +'='+  (right_b+"_64_memory")
+        elif("LDle" in word_str): # wo don't recognize the different between 8bit and 64bit a number
+            # if("I8" in word_str):
+            #     return pre + (left) + '=' + (right_b + "_8_memory")
+            return  pre+(left)   +'=('+  (right_b+")_memory")
         elif("PUT" in word_str):#PUT(offset=48) = t6 => offset48 = t6
             return   pre+(left) +'='+  (right_b)
         elif("STle" in word_str):#STle(t6) = t0 => [t6]=t0!!!!!!!!!!!!!
-            return  pre+(left+"_memory") +'='+  (right_b)
+            return  "("+pre+(left+")_memory") +'='+  (right_b)
         elif ("Mul" in word_str):
             pp = right_b.find(",")
             subl = right_b[0:pp]
@@ -163,7 +163,7 @@ def getpart(instruction , lr): # get the element from equal formula
         return mapr
 def pre_Handle(exp_ob_bool): # get rid of bool type
     ll = len(exp_ob_bool)
-    i = 0 ;
+    i = 0
     while i < ll:
         if(type(exp_ob_bool[i]) is bool):
             del  exp_ob_bool[i]
@@ -171,7 +171,15 @@ def pre_Handle(exp_ob_bool): # get rid of bool type
         else:
             i+=1
     return exp_ob_bool
-def simplifyExpr(expr_list):
+def myreplace (string , old , new , fromw):
+    if(fromw<0):
+        print 'index error in myreplace !'
+        fromw = 0
+    str1 = string[0:fromw]
+    str2 = string[fromw:]
+    str2 = str2.replace(old,new)
+    return str1+str2
+def simplifyExpr(expr_list): # replace the referenced viarables   like : a=b , c=a then get c = b
     expr_list = pre_Handle(expr_list)
     list_len = len(expr_list)
     nowindex = list_len-1
@@ -183,12 +191,52 @@ def simplifyExpr(expr_list):
             for item in rightoprand:
                 if(not cmp(leftpart , item)):
                     right = getpart(expr_list[searchindex] , 1)
-                    expr_list[nowindex] = expr_list[nowindex].replace(item , right)
+                    expr_list[nowindex] = myreplace(expr_list[nowindex] , item,right ,expr_list[nowindex].find("=")+1)
+                    # expr_list[nowindex] = expr_list[nowindex].replace(item , right)
             rightoprand = getpart(expr_list[nowindex],3)
             searchindex -= 1
         nowindex -= 1
 
+def getmemsign(instruction):#get the t0 from t0_memory
+    l = -1
+    r = 0
+    searchstr = ""
+    while True:
+        l = instruction.find("(",l+1)
+        if(l<0):
+            break
+        r = instruction.find(")_",l)
+        if r-l > 4:
+            continue
+        else:
+            return instruction[l+1:r],l
 
+    return  '',-1
+
+def realmemName(expr_list):# to makeup the function simplifyExpr :  t9 = offset48-0x8   t9_mem = offset72 then we get offset48-0x8_mem = offset72
+    list_len = len(expr_list)
+    now_index = list_len-1
+    while now_index > 0 :
+        searchstr,l = getmemsign(expr_list[now_index])
+        searchindex = now_index-1
+        while searchindex>=0:
+            leftpart = getpart(expr_list[searchindex],0)
+            if(not cmp(searchstr , leftpart)):
+                right = getpart(expr_list[searchindex] , 1)
+                expr_list[now_index] = myreplace(expr_list[now_index],searchstr,right , l)
+                searchstr,l = getmemsign(expr_list[now_index])
+            searchindex-=1
+        now_index-=1
+
+# -------test function------------
+
+# expr = ['t0=0x1000' , 't1=(t0)_memory']
+# print getmemsign(expr[1])
+# print
+# # realmemName(expr)
+# # print expr
+
+# --------------------main-----------------------
 addr = 0x40052D
 addr_go =[]
 addr_not_go = []
@@ -200,11 +248,12 @@ while (len(addr_not_go)):
     if addr_not_go[0] not in addr_go:
         irsb = getIRSBfromBin(addr_not_go[0])
         # print irsb.pp()
+
         stm_used = irsb.stmts_used
         for i in range(stm_used):
             simwor = handlesinwor(irsb.statements[i])
             z3_expr.append(simwor)
-            print irsb.statements[i]
+            # print irsb.statements[i]
             # print handlesinwor(irsb.statements[i])
         addr_go.append(addr_not_go[0])
         del addr_not_go[0]
@@ -216,10 +265,15 @@ while (len(addr_not_go)):
         # print [hex(int(x)) for x in addr_not_go]
     else:
         del addr_not_go[0]
-# for item in z3_expr:
+# ii = z3_expr
+# ii = pre_Handle(ii)
+# for item in ii:
 #     print item
-# print '--------------------'
-# simplifyExpr(z3_expr)
-# for item in z3_expr:
-#     print item
+# print '---------------------------'
+simplifyExpr(z3_expr)
+realmemName(z3_expr)
+for item in z3_expr:
+    print item
+
+
 s = Solver()
