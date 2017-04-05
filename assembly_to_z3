@@ -1,0 +1,36 @@
+from z3 import *
+class getZ3expr:
+
+    def __init__(self,init_body,loop_body,end_body):
+        self.initbody = init_body
+        self.loopbody = loop_body
+        self.endbody = end_body
+        self.var_allocate = []
+
+    def IRtoZ3exprVira(self,var):  # if var is number , return a number , else return a z3expr
+        x = str(var)
+
+        if ("0x" in x):
+            return int(x, 16)
+        elif (x.isdigit()):
+            return int(x)
+        else:
+            if (x not in self.var_allocate):
+                strcmd = "%s = BitVec('%s',64)" % (x, x)
+                exec strcmd
+                self.var_allocate["%s" % x] = eval(x)
+                return eval(x)
+            else:
+                return self.var_allocate["%s" % x]
+    def execute(self):
+        eax = self.IRtoZ3exprVira('eax')
+        eax = 1
+        ebx = self.IRtoZ3exprVira('ebx')
+        ebx = eax+1
+        print ebx
+
+a = BitVec("a",16)
+
+aa = getZ3expr([],[],[])
+aa.execute()
+
