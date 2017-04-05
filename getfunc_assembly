@@ -1,0 +1,108 @@
+
+
+# a IDAPython script : give two  instruction close to each other like move add , it find their binary representation
+
+from idaapi import *
+from idc import *
+import funcz3
+import os
+import sys
+class Inst_search:
+
+    def __init__(self, func_addr):
+        self.store_instr = []
+        self.init_body = []
+        self.loop_body = []
+        self.end_body = []
+        self.func_addr = func_addr
+        self.filename = 'error'
+        self.loop_start = 0 #start address of loop
+        self.loop_end = 0 # end address of loop
+
+    def searchinfun(self,funstartEA):
+        start = funstartEA
+        endad = FindFuncEnd(start)
+        nowindex = start
+        while nowindex<endad:
+            instsize = ItemSize(nowindex)
+            inst = ua_mnem(nowindex)
+            oneinstr = str(inst)
+            optype = 1
+            i = 0
+            while True:
+                optype = GetOpType(nowindex,i)
+                if( optype==0 or optype == -1 ):
+                    i = 0;
+                    break;
+                else:
+                    oneinstr+=(" "+GetOpnd(nowindex,i))
+                    i+=1
+            if (inst == "jmp"):#get loop start
+                ls = oneinstr.find("loc_")
+                add_str = oneinstr[ls+4:]
+                self.loop_end = int(add_str,16)
+            elif(inst == 'jnz'):
+                ls = oneinstr.find("loc_")
+                add_str = oneinstr[ls+4:]
+                self.loop_start = int(add_str,16)
+            self.store_instr.append(((nowindex),oneinstr))
+            nowindex += instsize
+
+
+    def search(self):
+        self.searchinfun(self.func_addr)
+        # print hex(self.loop_start)
+        # print hex(self.loop_end)
+
+    def simplifyinstr(self): # simplify the instructions , get 3 part of the function
+        init_body = []
+        loop_body = []
+        end_body = []
+        if (self.loop_end == 0 or self.loop_start==0):
+            print "loop error"
+            return 0
+        end_flag = False
+        for item in self.store_instr:
+            if(item[0] < self.loop_start):
+                init_body.append(item[1])
+            elif (item[0] >= self.loop_start and item[0] < self.loop_end):
+                loop_body.append(item[1])
+            elif (item[0] > self.loop_end):
+                if(end_flag):
+                    end_body.append(item[1])
+                if ("jnz" in item[1]):
+                    end_flag = True
+        # print init_body
+        # print loop_body
+        # print end_body
+        self.init_body = self.simToequa(init_body)
+        self.loop_body = self.simToequa(loop_body)
+        self.end_body = self.simToequa(end_body)
+    def simToequa(self,body): # change the assembly language to equation
+        newbody = []
+        for item in body:
+            arr = item.split(" ")
+            if(arr[0] == "add"):
+                newbody.append(arr[1]+"="+arr[1]+"+"+arr[2])
+            elif(arr[0] == "imul"):
+                newbody.append(arr[1]+"="+arr[1]+"*"+arr[2])
+            elif(arr[0] == "mov" or arr[0] == "movsx"):
+                newbody.append(arr[1] + "=" +  arr[2])
+        return newbody
+
+
+func_addr = 0x401334
+instrReplace = Inst_search(func_addr)
+instrReplace.search()
+instrReplace.simplifyinstr()
+print instrReplace.loop_body
+# print idc.ARGV
+# numarg = len(idc.ARGV)
+# if( len(idc.ARGV) < 3):
+#     instrsear = Inst_search('move','move','move')
+#     instrsear.search()
+# else:
+#     instrsear = Inst_search(idc.ARGV)
+#     instrsear.search()
+# idc.Exit(0)
+
