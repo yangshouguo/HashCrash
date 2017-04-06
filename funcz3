@@ -1,10 +1,11 @@
 from z3 import *
 class getZ3expr:
 
-    def __init__(self,init_body,loop_body,end_body,passwdlen):
+    def __init__(self,init_body,loop_body,end_body,passwdlen,checksum):
         self.initbody = init_body
         self.loopbody = loop_body
         self.endbody = end_body
+        self.checksum = checksum
         self.pawdlen = passwdlen #length of the password
         self.var_allocate = {}
         self.password = [BitVec("b%d" % i,32) for i in range(passwdlen)]
@@ -45,11 +46,10 @@ class getZ3expr:
         checksum = BitVec('checksum',32)
         F = []
         F.extend([self.is_alphanum(self.password[i])for  i in range(self.pawdlen)])
-        checksum_num = 1953254723
+        checksum_num = self.checksum
         F.extend([
             checksum == checksum_num,
             self.execute() == checksum
-
         ])
         print F
         self.get_models(F)
@@ -104,8 +104,8 @@ class getZ3expr:
                 strcmd = (arr[1])+"="+arr[2]
                 print strcmd
                 exec strcmd
-        print  'a=', rbpvar_C
-        print 'rbpvar_4',rbpvar_4
+        # print  'a=', rbpvar_C
+        # print 'rbpvar_4',rbpvar_4
         # loop part
         for i  in range(len(self.password)):
             for item in self.loopbody:
@@ -123,7 +123,7 @@ class getZ3expr:
                         self.exitsvir.append(arr[1])
                     if (arr[2][-1] == 'h'):
                         arr[2] = 'num_0x' + arr[2][0:-1]
-                    elif (arr[2] == '0'):
+                    elif (arr[2] == '0' or arr[2].isdigit()):
                         arr[2] = 'num_0x' + arr[2]
                     if (arr[2] not in self.exitsvir):
                         strcmd = (arr[2] + "=" + "self.IRtoZ3exprVira(arr[2])")
@@ -155,10 +155,11 @@ class getZ3expr:
                         self.exitsvir.append(arr[1])
                     if (arr[2][-1] == 'h'):
                         arr[2] = 'num_0x' + arr[2][0:-1]
-                    elif (arr[2] == '0'):
+                    elif (arr[2]=='0' or arr[2].isdigit()):
                         arr[2] = 'num_0x' + arr[2]
                     if (arr[2] not in self.exitsvir):
                         strcmd = (arr[2] + "=" + "self.IRtoZ3exprVira(arr[2])")
+                        print strcmd
                         exec strcmd
                         self.exitsvir.append(arr[2])
                     strcmd = (arr[1]) + "="+arr[1]+ "+" + arr[2]
@@ -172,25 +173,34 @@ class getZ3expr:
                     strcmd = (arr[1]) + "=self.password[i]"
                     exec strcmd
                     print strcmd
-            print  'a=', rbpvar_C
+                elif (arr[0] == 'shl'):
+                    strcmd = (arr[1] +"="+arr[1]+"<<"+arr[2])
+                    exec strcmd
+                    print strcmd
+                elif (arr[0] == 'shr'):
+                    strcmd = (arr[1] +"="+arr[1]+">>"+arr[2])
+                    print strcmd
+                    exec strcmd
+                elif (arr[0]=='xor'):
+                    strcmd = (arr[1]+"=("+arr[1]+"^"+arr[2]+")")
+                    print strcmd
+                    exec strcmd
+
+            # print  'a=', rbpvar_C
         #endbody
-        print 'endbody:'
+        # print 'endbody:'
         for item in self.endbody:
             item = item.replace("+", "").replace("[", "").replace("]", "")
             arr = item.split(" ")
             if (arr[0] == 'mov'):
-                if (arr[2] in self.passwordreg):
-                    strcmd = (arr[1] + " = self.password[i]")
-                    exec strcmd
-                    print strcmd
-                    continue
+
                 if (arr[1] not in self.exitsvir):
                     strcmd = (arr[1] + "=" + "self.IRtoZ3exprVira(arr[1])")
                     exec strcmd
                     self.exitsvir.append(arr[1])
                 if (arr[2][-1] == 'h'):
                     arr[2] = 'num_0x' + arr[2][0:-1]
-                elif (arr[2] == '0'):
+                elif (arr[2] == '0' or arr[2].isdigit()):
                     arr[2] = 'num_0x' + arr[2]
                 if (arr[2] not in self.exitsvir):
                     strcmd = (arr[2] + "=" + "self.IRtoZ3exprVira(arr[2])")
@@ -207,11 +217,11 @@ class getZ3expr:
 
 
 
-# loopbody = ['mov eax [rbp+var_8]', 'imul eax [rbp+var_C]', 'mov ecx eax', 'mov rax [rbp+var_18]', 'lea rdx [rax+1]', 'mov [rbp+var_18] rdx', 'movzx eax byte ptr [rax]', 'movsx eax al', 'add eax ecx', 'mov [rbp+var_8] eax', 'mov eax [rbp+var_C]', 'imul eax [rbp+var_4]', 'mov [rbp+var_C] eax']
-# initbody = ['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_4] 5C6B7h', 'mov [rbp+var_C] 0F8C9h', 'mov [rbp+var_8] 0', 'jmp loc_400576']
-# endbody = ['mov eax [rbp+var_8]','pop rbp','retn']
-#
-# aa = getZ3expr(initbody,loopbody,endbody,11)
-# aa.solve()
+loopbody = ['mov eax [rbp+var_8]', 'shl eax 5', 'mov edx eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'add edx eax', 'mov eax [rbp+var_8]', 'shr eax 2', 'add eax edx', 'xor [rbp+var_8] eax', 'add [rbp+var_18] 1', 'add [rbp+var_4] 1']
+initbody =['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_8] 4E67C6A7h', 'mov [rbp+var_4] 0', 'mov [rbp+var_4] 0', 'jmp loc_40066E']
+endbody =['mov eax [rbp+var_8]', 'pop rbp', 'retn']
+
+aa = getZ3expr(initbody,loopbody,endbody,8,61769727)
+aa.solve()
 
 
