@@ -174,15 +174,46 @@ class getZ3expr:
                     exec strcmd
                     print strcmd
                 elif (arr[0] == 'shl'):
+                    if (arr[2][-1] == 'h'):
+                        arr[2] = 'num_0x' + arr[2][0:-1]
+                    elif (arr[2]=='0' or arr[2].isdigit()):
+                        arr[2] = 'num_0x' + arr[2]
+                    if (arr[2] not in self.exitsvir):
+                        strcmd = (arr[2] + "=" + "self.IRtoZ3exprVira(arr[2])")
+                        print strcmd
+                        exec strcmd
+                        self.exitsvir.append(arr[2])
                     strcmd = (arr[1] +"="+arr[1]+"<<"+arr[2])
                     exec strcmd
                     print strcmd
                 elif (arr[0] == 'shr'):
+                    if (arr[2][-1] == 'h'):
+                        arr[2] = 'num_0x' + arr[2][0:-1]
+                    elif (arr[2]=='0' or arr[2].isdigit()):
+                        arr[2] = 'num_0x' + arr[2]
+                    if (arr[2] not in self.exitsvir):
+                        strcmd = (arr[2] + "=" + "self.IRtoZ3exprVira(arr[2])")
+                        print strcmd
+                        exec strcmd
+                        self.exitsvir.append(arr[2])
                     strcmd = (arr[1] +"="+arr[1]+">>"+arr[2])
                     print strcmd
                     exec strcmd
                 elif (arr[0]=='xor'):
                     strcmd = (arr[1]+"=("+arr[1]+"^"+arr[2]+")")
+                    print strcmd
+                    exec strcmd
+                elif (arr[0] == 'sub'):
+                    if (arr[2][-1] == 'h'):
+                        arr[2] = 'num_0x' + arr[2][0:-1]
+                    elif (arr[2]=='0' or arr[2].isdigit()):
+                        arr[2] = 'num_0x' + arr[2]
+                    if (arr[2] not in self.exitsvir):
+                        strcmd = (arr[2] + "=" + "self.IRtoZ3exprVira(arr[2])")
+                        print strcmd
+                        exec strcmd
+                        self.exitsvir.append(arr[2])
+                    strcmd = (arr[1] +"="+arr[1]+"-"+arr[2])
                     print strcmd
                     exec strcmd
 
@@ -216,12 +247,35 @@ class getZ3expr:
 
 
 
+#SDBHash
+# loopbody = ['mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'mov edx [rbp+var_8]', 'shl edx 6', 'add edx eax', 'mov eax [rbp+var_8]', 'shl eax 10h', 'add eax edx', 'sub eax [rbp+var_8]', 'mov [rbp+var_8] eax', 'add [rbp+var_18] 1', 'add [rbp+var_4] 1']
+# initbody =['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_8] 0', 'mov [rbp+var_4] 0', 'mov [rbp+var_4] 0', 'jmp loc_40084E']
+# endbody =['mov eax [rbp+var_8]', 'pop rbp', 'retn']
 
-loopbody = ['mov eax [rbp+var_8]', 'shl eax 5', 'mov edx eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'add edx eax', 'mov eax [rbp+var_8]', 'shr eax 2', 'add eax edx', 'xor [rbp+var_8] eax', 'add [rbp+var_18] 1', 'add [rbp+var_4] 1']
-initbody =['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_8] 4E67C6A7h', 'mov [rbp+var_4] 0', 'mov [rbp+var_4] 0', 'jmp loc_40066E']
-endbody =['mov eax [rbp+var_8]', 'pop rbp', 'retn']
+#FNV Hash
+# initbody=['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_4] 811C9DC5h', 'mov [rbp+var_C] 0', 'mov [rbp+var_8] 0', 'mov [rbp+var_8] 0', 'jmp loc_400995']
+# loopbody=['mov eax [rbp+var_C]', 'imul eax [rbp+var_4]', 'mov [rbp+var_C] eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'xor [rbp+var_C] eax', 'add [rbp+var_18] 1', 'add [rbp+var_8] 1']
+# endbody =['mov eax [rbp+var_C]', 'pop rbp', 'retn']
 
-aa = getZ3expr(initbody,loopbody,endbody,8,61769727)
+#BPHash
+
+# initbody = ['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_8] 0', 'mov [rbp+var_4] 0', 'mov [rbp+var_4] 0', 'jmp loc_40093F']
+# loopbody = ['mov eax [rbp+var_8]', 'shl eax 7', 'mov edx eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'xor eax edx', 'mov [rbp+var_8] eax', 'add [rbp+var_18] 1', 'add [rbp+var_4] 1']
+# endbody = ['mov eax [rbp+var_8]', 'pop rbp', 'retn']
+#DEKHash
+# initbody = ['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov eax [rbp+var_1C]', 'mov [rbp+var_8] eax', 'mov [rbp+var_4] 0', 'mov [rbp+var_4] 0', 'jmp loc_4008F0']
+# loopbody = ['mov eax [rbp+var_8]', 'ror eax 1Bh', 'mov edx eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'xor eax edx', 'mov [rbp+var_8] eax', 'add [rbp+var_18] 1', 'add [rbp+var_4] 1']
+# endbody = ['mov eax [rbp+var_8]', 'pop rbp', 'retn']
+# #DJBHash
+# initbody = ['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_8] 1505h', 'mov [rbp+var_4] 0', 'mov [rbp+var_4] 0', 'jmp loc_4008A2']
+# loopbody = ['mov eax [rbp+var_8]', 'shl eax 5', 'mov edx eax', 'mov eax [rbp+var_8]', 'add edx eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'add eax edx', 'mov [rbp+var_8] eax', 'add [rbp+var_18] 1', 'add [rbp+var_4] 1']
+# endbody = ['mov eax [rbp+var_8]', 'pop rbp', 'retn']
+
+#BKDRHash
+initbody = ['push rbp', 'mov rbp rsp', 'mov [rbp+var_18] rdi', 'mov [rbp+var_1C] esi', 'mov [rbp+var_4] 83h', 'mov [rbp+var_C] 0', 'mov [rbp+var_8] 0', 'mov [rbp+var_8] 0', 'jmp loc_4007F6']
+loopbody = ['mov eax [rbp+var_C]', 'imul eax [rbp+var_4]', 'mov edx eax', 'mov rax [rbp+var_18]', 'movzx eax byte ptr [rax]', 'movsx eax al', 'add eax edx', 'mov [rbp+var_C] eax', 'add [rbp+var_18] 1', 'add [rbp+var_8] 1']
+endbody = ['mov eax [rbp+var_C]', 'pop rbp', 'retn']
+aa = getZ3expr(initbody,loopbody,endbody,9,30809352)
 aa.solve()
 
 
